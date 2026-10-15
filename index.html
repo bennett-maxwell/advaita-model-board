@@ -1,0 +1,909 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>Advaita model board</title>
+<style>
+html,body{margin:0;min-height:100%}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:var(--bg);color:var(--ink);line-height:1.5;font-size:16px}
+button{cursor:pointer;font:inherit}
+:root {
+  --bg: #f4f4f2;
+  --ink: #1c1917;
+  --muted: #57534e;
+  --line: #e4e1db;
+  --soft: #eceae4;
+  --amber: #d97706;
+  --bar-edge: #1c1917;
+  --sheet: #fffcf7;
+  --hatch: rgba(28, 25, 23, 0.14);
+  --good: #16a34a;
+}
+
+:root[data-theme="dark"] {
+  --bg: #141311;
+  --ink: #f5f1ea;
+  --muted: #a8a29e;
+  --line: #2c2926;
+  --soft: #1e1c19;
+  --amber: #f59e0b;
+  --bar-edge: #f5f1ea;
+  --sheet: #1c1a17;
+  --hatch: rgba(245, 241, 234, 0.18);
+  --good: #4ade80;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #141311;
+    --ink: #f5f1ea;
+    --muted: #a8a29e;
+    --line: #2c2926;
+    --soft: #1e1c19;
+    --amber: #f59e0b;
+    --bar-edge: #f5f1ea;
+    --sheet: #1c1a17;
+    --hatch: rgba(245, 241, 234, 0.18);
+    --good: #4ade80;
+  }
+}
+
+.page {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 16px 16px 48px;
+}
+
+.top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.word {
+  font-size: 13px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin: 0;
+}
+
+.brand {
+  font-size: 13px;
+  letter-spacing: 0.02em;
+  color: var(--muted);
+  margin: 0;
+}
+
+.brand span {
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-weight: 650;
+  color: var(--ink);
+}
+
+.meta,
+.draft {
+  margin: 8px 0 0;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.lede strong {
+  font-weight: 650;
+  color: var(--ink);
+}
+
+.legend {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px 12px;
+  margin: 16px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.legend li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 28px;
+  font-size: 13px;
+  font-weight: 650;
+  line-height: 1.2;
+}
+
+.key {
+  position: relative;
+  width: 28px;
+  height: 10px;
+  border-radius: 6px;
+  flex: 0 0 auto;
+}
+
+.key-new {
+  background: var(--ink);
+}
+
+.key-old {
+  background: var(--soft);
+}
+
+.key-old::after {
+  content: "";
+  position: absolute;
+  left: 13px;
+  top: -5px;
+  height: 20px;
+  border-left: 1.5px dashed var(--ink);
+}
+
+.key-fight {
+  background: repeating-linear-gradient(
+    -45deg,
+    var(--amber),
+    var(--amber) 3px,
+    transparent 3px,
+    transparent 6px
+  );
+  box-shadow: inset 0 0 0 1px var(--amber);
+}
+
+.key-none {
+  background: repeating-linear-gradient(
+    -45deg,
+    var(--hatch),
+    var(--hatch) 3px,
+    transparent 3px,
+    transparent 6px
+  );
+}
+
+h1 {
+  font-size: 28px;
+  line-height: 1.15;
+  font-weight: 700;
+  margin: 4px 0 0;
+  text-align: left;
+}
+
+.lede {
+  margin: 12px 0 0;
+  font-size: 16px;
+  text-align: left;
+}
+
+.ghost {
+  min-height: 44px;
+  min-width: 44px;
+  padding: 0 12px;
+  border-radius: 10px;
+  border: 1px solid var(--line);
+  background: transparent;
+  color: var(--ink);
+  font: inherit;
+  font-size: 16px;
+  white-space: nowrap;
+  flex: 0 0 auto;
+}
+
+.tabs {
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding: 12px 16px;
+  margin: 8px -16px 0;
+  background: var(--bg);
+  scrollbar-width: none;
+}
+
+.tabs::-webkit-scrollbar {
+  display: none;
+}
+
+.tab {
+  min-height: 44px;
+  padding: 0 14px;
+  border-radius: 10px;
+  border: 1px solid var(--line);
+  background: transparent;
+  color: var(--ink);
+  font: inherit;
+  font-size: 16px;
+  white-space: nowrap;
+}
+
+.tab[aria-selected="true"] {
+  background: var(--ink);
+  color: var(--bg);
+  border-color: var(--ink);
+}
+
+.section {
+  margin-top: 32px;
+}
+
+.kicker {
+  margin: 0;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.card-title {
+  margin: 4px 0 0;
+  font-size: 22px;
+  line-height: 1.2;
+  font-weight: 700;
+  text-align: left;
+}
+
+.used {
+  margin: 6px 0 0;
+  color: var(--muted);
+  font-size: 16px;
+}
+
+.best {
+  margin: 10px 0 12px;
+  font-size: 16px;
+  font-weight: 650;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 86px 1fr 100px;
+  gap: 8px;
+  align-items: center;
+  min-height: 56px;
+  width: 100%;
+  padding: 4px 0;
+  border: 0;
+  border-bottom: 1px solid var(--line);
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+}
+
+.chip {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 44px;
+}
+
+.tag {
+  font-size: 13px;
+  font-weight: 650;
+  line-height: 1.2;
+}
+
+.track {
+  position: relative;
+  height: 36px;
+}
+
+.bar,
+.band,
+.stub,
+.nub {
+  position: absolute;
+  top: 13px;
+  height: 10px;
+  border-radius: 6px;
+}
+
+.bar,
+.nub {
+  left: 0;
+}
+
+.bar.edge,
+.nub.edge {
+  box-shadow: inset 0 0 0 1px var(--bar-edge);
+}
+
+.band {
+  background: repeating-linear-gradient(
+    -45deg,
+    var(--amber),
+    var(--amber) 3px,
+    transparent 3px,
+    transparent 6px
+  );
+  box-shadow: inset 0 0 0 1px var(--amber);
+}
+
+.stub {
+  width: 18%;
+  background: repeating-linear-gradient(
+    -45deg,
+    var(--hatch),
+    var(--hatch) 3px,
+    transparent 3px,
+    transparent 6px
+  );
+}
+
+.nub {
+  width: 3px;
+}
+
+.tick {
+  position: absolute;
+  width: 0;
+  border-left: 1.5px dashed var(--ink);
+  pointer-events: none;
+}
+
+.tick.top {
+  top: 2px;
+  height: 12px;
+}
+
+.tick.bot {
+  top: 22px;
+  height: 12px;
+}
+
+.tick span {
+  position: absolute;
+  left: 3px;
+  font-size: 11px;
+  line-height: 1;
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+.tick.top span {
+  top: 0;
+}
+
+.tick.bot span {
+  bottom: 0;
+}
+
+.tick.right span {
+  left: auto;
+  right: 3px;
+}
+
+.score {
+  font-size: 17px;
+  font-weight: 700;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.15;
+}
+
+.score small {
+  display: block;
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--muted);
+}
+
+.score.bad {
+  color: var(--amber);
+}
+
+.flag {
+  display: block;
+  font-size: 11px;
+  color: var(--amber);
+  font-weight: 600;
+}
+
+.steps {
+  margin: 16px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.steps li {
+  padding: 12px 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.steps strong {
+  display: block;
+  margin-bottom: 4px;
+}
+
+.jobs {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.job,
+.send {
+  min-height: 44px;
+  border-radius: 10px;
+  border: 1px solid var(--line);
+  background: transparent;
+  color: var(--ink);
+  font: inherit;
+  font-size: 16px;
+  text-align: left;
+  padding: 10px 12px;
+}
+
+.job[aria-pressed="true"] {
+  background: var(--ink);
+  color: var(--bg);
+  border-color: var(--ink);
+}
+
+.other {
+  min-height: 44px;
+  width: 100%;
+  box-sizing: border-box;
+  border-radius: 10px;
+  border: 1px solid var(--line);
+  background: var(--sheet);
+  color: var(--ink);
+  font: inherit;
+  font-size: 16px;
+  padding: 10px 12px;
+}
+
+.rec {
+  margin: 12px 0 0;
+}
+
+.src-block {
+  padding: 16px 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.src-block h3,
+.sheet h3 {
+  margin: 16px 0 6px;
+  font-size: 16px;
+  text-align: left;
+}
+
+.src-block p,
+.foot p,
+.sheet p {
+  margin: 0 0 8px;
+}
+
+.sheet-back {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.35);
+  z-index: 20;
+  border: 0;
+  padding: 0;
+}
+
+.sheet {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 21;
+  max-height: 78vh;
+  overflow: auto;
+  background: var(--sheet);
+  color: var(--ink);
+  border-radius: 16px 16px 0 0;
+  padding: 12px 16px 28px;
+}
+
+.sheet h2 {
+  margin: 8px 0 0;
+  font-size: 22px;
+  text-align: left;
+}
+
+.sheet a {
+  color: inherit;
+  font-weight: 650;
+}
+
+.src-link {
+  display: block;
+  min-height: 44px;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.foot {
+  margin-top: 36px;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+</style>
+</head>
+<body>
+<main class="page"></main>
+<script type="application/json" id="visual-data">{"pulled":"15 Oct 2026","pulledLine":"Thu Oct 15, 2026","house":{"name":"house turn","inputTokens":8000,"outputTokens":1200,"why":"One agent turn that reads about 8,000 tokens and writes about 1,200. The input is under 100,000, so Haiku and Luna stay on their low rate."},"models":[{"id":"fable","name":"Claude Fable 5.1","tag":"Fable","company":"anthropic","hex":"#A33A00","mark":"a","ink":"#ffffff","edge":false,"access":null,"bestLive":true},{"id":"opus","name":"Claude Opus 5.5","tag":"Opus","company":"anthropic","hex":"#D9480F","mark":"a","ink":"#111111","edge":false,"access":null,"bestLive":true},{"id":"sonnet","name":"Claude Sonnet 5.5","tag":"Sonnet","company":"anthropic","hex":"#FF922B","mark":"a","ink":"#111111","edge":false,"access":null,"bestLive":true},{"id":"haiku","name":"Claude Haiku 5.5","tag":"Haiku","company":"anthropic","hex":"#FFC078","mark":"a","ink":"#111111","edge":false,"access":null,"bestLive":true},{"id":"astra","name":"GPT-6 Astra","tag":"Astra","company":"openai","hex":"#FFFFFF","mark":"hex","ink":"#111111","edge":true,"access":null,"bestLive":true},{"id":"sol","name":"GPT-6.1 Sol","tag":"Sol","company":"openai","hex":"#DEE2E6","mark":"hex","ink":"#111111","edge":false,"access":null,"bestLive":true},{"id":"terra","name":"GPT-5.6 Terra","tag":"Terra","company":"openai","hex":"#ADB5BD","mark":"hex","ink":"#111111","edge":false,"access":null,"bestLive":true},{"id":"luna","name":"GPT-6 Luna","tag":"Luna","company":"openai","hex":"#868E96","mark":"hex","ink":"#111111","edge":false,"access":null,"bestLive":true},{"id":"argon","name":"Gemini 4 Argon","tag":"Argon","company":"google","hex":"#2B8A3E","mark":"star","ink":"#ffffff","edge":false,"access":"Waitlist only","bestLive":false},{"id":"flash","name":"Gemini 3.8 Flash","tag":"Flash","company":"google","hex":"#69DB7C","mark":"star","ink":"#111111","edge":false,"access":null,"bestLive":true},{"id":"muse","name":"Muse Spark 1.3","tag":"Muse","company":"meta","hex":"#1C7ED6","mark":"inf","ink":"#ffffff","edge":false,"access":null,"bestLive":true},{"id":"grok","name":"Grok 4.7","tag":"Grok","company":"xai","hex":"#111111","mark":"x","ink":"#ffffff","edge":true,"access":null,"bestLive":true},{"id":"grokf","name":"Grok 4.7 Fast","tag":"Grok F","company":"xai","hex":"#495057","mark":"x","ink":"#ffffff","edge":false,"access":"Cursor + Grok Build only","bestLive":false},{"id":"q27","name":"Qwen3.8-27B (Studio)","tag":"Q27B","company":"local","hex":"#E03131","mark":"sq","ink":"#ffffff","edge":false,"access":"Your Studio only","bestLive":true}],"metrics":[{"id":"cost","tab":"cost","title":"Dollars per house turn","kicker":"Cost","higher":false,"unit":"USD","bench":"House turn, not a lab benchmark","used":"One agent turn that reads 8,000 tokens and writes 1,200"},{"id":"speed","tab":"speed","title":"Seconds to write the answer","kicker":"Speed","higher":false,"unit":"seconds","bench":"Output tok/s, turned into seconds","used":"A 10-second Pulse first pass, and a live voice reply"},{"id":"value","tab":"value","title":"AA points per dollar","kicker":"Efficiency","higher":true,"unit":"points per $","bench":"AA index divided by house-turn cost","used":"The same turn, only when both the score and the price are a single number"},{"id":"aa","tab":"boss","title":"AA Intelligence Index","kicker":"Boss, bench 1 of 3","higher":true,"unit":"index","bench":"AA Intelligence Index v4.3.2","used":"Pulse router at 8:10, and inbound triage"},{"id":"gdp","tab":"boss","title":"GDPval-AA office Elo","kicker":"Boss, bench 2 of 3","higher":true,"unit":"Elo","bench":"GDPval-AA v2.1","used":"A finished office packet, such as a quote sheet or a prospect packet"},{"id":"omni","tab":"boss","title":"AA-Omniscience index","kicker":"Boss, bench 3 of 3","higher":true,"unit":"index","bench":"AA-Omniscience","used":"Rebate lines and FDD claims, where a made-up number is expensive. This bar is the knowledge index, so higher is better"},{"id":"osworld","tab":"hands","title":"OSWorld 2.0 partial","kicker":"Hands, computer","higher":true,"unit":"percent","bench":"OSWorld 2.0","used":"A desktop paste into GHL, and a Notion sprint row"},{"id":"terminal","tab":"hands","title":"Terminal-Bench 4.0","kicker":"Hands, worker","higher":true,"unit":"percent","bench":"Terminal-Bench 4.0","used":"A nightly money check-in inside a terminal"},{"id":"deepswe","tab":"hands","title":"DeepSWE v1.1","kicker":"Hands, worker","higher":true,"unit":"percent","bench":"DeepSWE v1.1","used":"A hub page, and a nightly pack-page patch"}],"cells":{"cost":{"fable":{"lo":0.14,"hi":null,"text":"$0.14","sources":[{"who":"ArtificialWatch price catalog","url":"https://artificialwatch.com/llm-pricing","detail":"Fable 5.1 listed $10 in / $50 out, catalog 14 Oct 2026."},{"who":"BenchLeader frontier","url":"https://www.benchleader.com/","detail":"Frontier table shows $20, which matches a 3:1 blend."}],"note":"Standard rate. BenchLeader's $20 figure is the 3:1 blended price of $10 and $50, not a second rate. Formula: (8000 x $10 + 1200 x $50) / 1,000,000 = $0.14."},"opus":{"lo":0.055999999999999994,"hi":null,"text":"$0.056","sources":[{"who":"Anthropic","url":"https://www.anthropic.com/claude-haiku-5-5","detail":"Haiku 5.5 launch page table: Opus 5.5 $4 in / $20 out."}],"note":"Read off Anthropic's own Haiku 5.5 comparison table. Formula: (8000 x $4 + 1200 x $20) / 1,000,000 = $0.056."},"sonnet":{"lo":0.027999999999999997,"hi":null,"text":"$0.028","sources":[{"who":"Anthropic","url":"https://www.anthropic.com/claude-haiku-5-5","detail":"Sonnet 5.5 $2 in / $10 out."}],"note":"Same Anthropic table. Formula: (8000 x $2 + 1200 x $10) / 1,000,000 = $0.028."},"haiku":{"lo":0.0014,"hi":null,"text":"$0.0014","sources":[{"who":"Anthropic","url":"https://www.anthropic.com/claude-haiku-5-5","detail":"Haiku 5.5 $0.10 / $0.50 under 100k, published 7 Oct 2026."}],"note":"Rate below 100,000 input tokens. Above that it is $0.50 / $2.50. This house turn is 8,000 in. Formula: (8000 x $0.1 + 1200 x $0.5) / 1,000,000 = $0.0014."},"astra":{"lo":0.14,"hi":null,"text":"$0.14","sources":[{"who":"BenchLM OpenAI price page","url":"https://benchlm.ai/openai/api-pricing","detail":"GPT-6 Astra $10 in / $50 out, synced 14 Oct 2026."},{"who":"Nadir","url":"https://getnadir.com/blog/gpt-6-sol-luna-pricing-terra-retired-routing/","detail":"Same $10 / $50, citing OpenAI model pages, 23 Sep 2026."}],"note":"Prompts over 272k are billed higher ($20 / $75). This basket is not over that line. Formula: (8000 x $10 + 1200 x $50) / 1,000,000 = $0.14."},"sol":{"lo":0.027999999999999997,"hi":null,"text":"$0.028","sources":[{"who":"BenchLM OpenAI price page","url":"https://benchlm.ai/openai/api-pricing","detail":"GPT-6.1 Sol $2 / $10, synced 14 Oct 2026."},{"who":"ArtificialWatch price catalog","url":"https://artificialwatch.com/llm-pricing","detail":"Same $2 / $10 in the 14 Oct catalog."}],"note":"GPT-6.1 Sol kept the GPT-6 Sol rate. Cached input is $0.10. Formula: (8000 x $2 + 1200 x $10) / 1,000,000 = $0.028."},"terra":{"lo":0.0304,"hi":null,"text":"$0.0304","sources":[{"who":"Nadir","url":"https://getnadir.com/blog/gpt-6-sol-luna-pricing-terra-retired-routing/","detail":"GPT-5.6 Terra $2 in / $12 out. One source."}],"note":"One write-up that cites OpenAI's model page. No second price page confirmed it on this pull. There is no GPT-6 Terra yet. Formula: (8000 x $2 + 1200 x $12) / 1,000,000 = $0.0304."},"luna":{"lo":0.0014,"hi":null,"text":"$0.0014","sources":[{"who":"BenchLM OpenAI price page","url":"https://benchlm.ai/openai/api-pricing","detail":"GPT-6 Luna $0.10 / $0.50."},{"who":"VentureBeat","url":"https://venturebeat.com/technology/anthropic-launches-claude-haiku-5-5-with-90-api-price-reduction-matching-gpt-6-luna","detail":"Haiku 5.5 story confirms Luna matches $0.10 / $0.50."}],"note":"Matches Haiku's low rate. Higher above 272k input. Formula: (8000 x $0.1 + 1200 x $0.5) / 1,000,000 = $0.0014."},"argon":{"lo":0.027999999999999997,"hi":null,"text":"$0.028","sources":[{"who":"ArtificialWatch price catalog","url":"https://artificialwatch.com/llm-pricing","detail":"Gemini 4 Argon $2 / $10, catalog 14 Oct 2026."}],"note":"Price is public. Access is not. Waitlist, Google Fairwind. Formula: (8000 x $2 + 1200 x $10) / 1,000,000 = $0.028."},"flash":{"lo":0.010499999999999999,"hi":null,"text":"$0.0105","sources":[{"who":"VentureBeat","url":"https://venturebeat.com/technology/anthropic-launches-claude-haiku-5-5-with-90-api-price-reduction-matching-gpt-6-luna","detail":"Price table: Gemini 3.8 Flash $0.75 / $3.75."}],"note":"VentureBeat calls this a promotional standard rate through 31 Dec 2026. Formula: (8000 x $0.75 + 1200 x $3.75) / 1,000,000 = $0.0105."},"muse":{"lo":0.015099999999999999,"hi":null,"text":"$0.0151","sources":[{"who":"ArtificialWatch price catalog","url":"https://artificialwatch.com/llm-pricing","detail":"Muse Spark 1.3 $1.25 / $4.25, catalog 14 Oct 2026."}],"note":"Muse Spark 1.3, not Muse Wonder. Formula: (8000 x $1.25 + 1200 x $4.25) / 1,000,000 = $0.0151."},"grok":{"lo":0.0232,"hi":null,"text":"$0.0232","sources":[{"who":"Artificial Analysis","url":"https://artificialanalysis.ai/models/grok-4-7","detail":"Grok 4.7 xhigh $2 in / $6 out."}],"note":"Under 200k prompt. Over that, $4 / $12. AA's own page lists this rate. Formula: (8000 x $2 + 1200 x $6) / 1,000,000 = $0.0232."},"grokf":{"lo":null,"hi":null,"text":"?","sources":[],"note":"No public price for Grok 4.7 Fast on this pull. The AA Grok 4.7 page lists xhigh, high, and low, not Fast."},"q27":{"lo":0,"hi":null,"text":"$0","sources":[{"who":"This roster","url":"https://github.com/bennett-maxwell/fki-ai-skills/blob/main/skills/model-comparison-skill/SKILL.md","detail":"Q27B is the local Studio model. API price is $0."}],"note":"No API bill. Electricity on the Studio is not in this number. Formula: (8000 x $0 + 1200 x $0) / 1,000,000 = $0."}},"speed":{"fable":{"lo":16.901408450704224,"hi":null,"text":"16.9s","sources":[{"who":"BenchLeader frontier","url":"https://www.benchleader.com/","detail":"Frontier speed column, 15 Oct 2026: Fable 71 tok/s."}],"note":"Seconds to write 1200 tokens at 71 tok/s. Input time is not included. WhatLLM lists 67. Within 8% of the frontier column, so the bar uses 71."},"opus":{"lo":12.631578947368421,"hi":null,"text":"12.6s","sources":[{"who":"BenchLeader frontier","url":"https://www.benchleader.com/","detail":"Frontier speed column: Opus 95 tok/s."},{"who":"WhatLLM (cites AA)","url":"https://whatllm.org/best-ai-models","detail":"WhatLLM lists 98. Close enough to confirm, not a second bar."}],"note":"Seconds to write 1200 tokens at 95 tok/s. Input time is not included. "},"sonnet":{"lo":8.633093525179856,"hi":null,"text":"8.6s","sources":[{"who":"WhatLLM (cites AA)","url":"https://whatllm.org/best-ai-models","detail":"WhatLLM, citing AA, Sonnet 5.5 at 139 tok/s. One board."}],"note":"Seconds to write 1200 tokens at 139 tok/s. Input time is not included. One board. Treat the seconds as directional."},"haiku":{"lo":5.02092050209205,"hi":null,"text":"5.0s","sources":[{"who":"WhatLLM (cites AA)","url":"https://whatllm.org/best-ai-models","detail":"WhatLLM, citing AA, Haiku 5.5 at 239 tok/s. One board."}],"note":"Seconds to write 1200 tokens at 239 tok/s. Input time is not included. One board."},"astra":{"lo":13.793103448275861,"hi":19.672131147540984,"text":"13.8/19.7s","sources":[{"who":"BenchLeader frontier","url":"https://www.benchleader.com/","detail":"Frontier column: Astra 61 tok/s."},{"who":"WhatLLM (cites AA)","url":"https://whatllm.org/best-ai-models","detail":"WhatLLM: Astra 87 tok/s."}],"note":"Seconds to write 1200 tokens at 61/87 tok/s. Input time is not included. Two boards, 30% apart. Shown as a range. Not averaged."},"sol":{"lo":20.338983050847457,"hi":null,"text":"20.3s","sources":[{"who":"BenchLeader frontier","url":"https://www.benchleader.com/","detail":"Frontier column: Sol 59 tok/s."}],"note":"Seconds to write 1200 tokens at 59 tok/s. Input time is not included. WhatLLM lists 361 tok/s. That is about 6x every other frontier model and is not used."},"terra":{"lo":9.6,"hi":null,"text":"9.6s","sources":[{"who":"WhatLLM (cites AA)","url":"https://whatllm.org/best-ai-models","detail":"WhatLLM: GPT-5.6 Terra 125 tok/s. One board."}],"note":"Seconds to write 1200 tokens at 125 tok/s. Input time is not included. One board."},"luna":{"lo":null,"hi":null,"text":"?","sources":[],"note":"No output tok/s for GPT-6 Luna on the frontier column or the WhatLLM top 30."},"argon":{"lo":25,"hi":null,"text":"25.0s","sources":[{"who":"BenchLeader frontier","url":"https://www.benchleader.com/","detail":"Frontier column: Argon 48 tok/s."}],"note":"Seconds to write 1200 tokens at 48 tok/s. Input time is not included. Waitlist model. Speed is still a real published figure."},"flash":{"lo":8,"hi":null,"text":"8.0s","sources":[{"who":"WhatLLM (cites AA)","url":"https://whatllm.org/best-ai-models","detail":"WhatLLM: Gemini 3.8 Flash high, 150 tok/s. One board."}],"note":"Seconds to write 1200 tokens at 150 tok/s. Input time is not included. One board."},"muse":{"lo":9.375,"hi":11.11111111111111,"text":"9.4/11.1s","sources":[{"who":"WhatLLM (cites AA)","url":"https://whatllm.org/best-ai-models","detail":"WhatLLM: Muse Spark 1.3 at 108 tok/s."},{"who":"BenchLeader frontier","url":"https://www.benchleader.com/","detail":"Frontier column: Muse Spark 1.3 at 128 tok/s."}],"note":"Seconds to write 1200 tokens at 108/128 tok/s. Input time is not included. Range, not an average. This is Spark, not Wonder."},"grok":{"lo":15,"hi":null,"text":"15.0s","sources":[{"who":"Artificial Analysis","url":"https://artificialanalysis.ai/models/grok-4-7","detail":"Grok 4.7 xhigh table lists 80 tok/s. The same page's sentence says 79.5."}],"note":"Seconds to write 1200 tokens at 80 tok/s. Input time is not included. WhatLLM's 61 is not used. It does not match AA's own page."},"grokf":{"lo":null,"hi":null,"text":"?","sources":[],"note":"AA's Grok 4.7 release page does not list a Fast SKU with its own tok/s."},"q27":{"lo":41.37931034482759,"hi":null,"text":"41.4s","sources":[{"who":"Studio measurement","url":"https://github.com/bennett-maxwell/fki-ai-skills/blob/main/skills/model-comparison-skill/SKILL.md","detail":"Operator figure for Qwen3.8-27B Q8 on the Studio, about 29 tok/s. Not a public leaderboard."}],"note":"Seconds to write 1200 tokens at 29 tok/s. Input time is not included. Local only. Not comparable to a hosted API node."}},"value":{"fable":{"lo":381.4285714285714,"hi":null,"text":"381","sources":[{"who":"benchgap measured","url":"https://benchgap.net/b/artificialanalysis/current","detail":"Measured 15 Oct 2026."},{"who":"BenchLeader","url":"https://www.benchleader.com/benchmarks/aa_intelligence_index","detail":"Fable 5.1 max 53.4 on AA Index v4.3.2."},{"who":"WhatLLM (cites AA)","url":"https://whatllm.org/best-ai-models","detail":"WhatLLM 53.4."},{"who":"ArtificialWatch price catalog","url":"https://artificialwatch.com/llm-pricing","detail":"Fable 5.1 listed $10 in / $50 out, catalog 14 Oct 2026."},{"who":"BenchLeader frontier","url":"https://www.benchleader.com/","detail":"Frontier table shows $20, which matches a 3:1 blend."}],"note":"53.4 AA points / $0.14 per house turn = 381 points per dollar."},"opus":{"lo":1028.5714285714287,"hi":null,"text":"1,029","sources":[{"who":"Artificial Analysis","url":"https://artificialanalysis.ai/models","detail":"Homepage rounds the leader to 58."},{"who":"benchgap measured","url":"https://benchgap.net/b/artificialanalysis/current","detail":"Measured 57.6."},{"who":"WhatLLM (cites AA)","url":"https://whatllm.org/best-ai-models","detail":"WhatLLM 57.6."},{"who":"Anthropic","url":"https://www.anthropic.com/claude-haiku-5-5","detail":"Haiku 5.5 launch page table: Opus 5.5 $4 in / $20 out."}],"note":"57.6 AA points / $0.056 per house turn = 1,029 points per dollar."},"sonnet":{"lo":2000.0000000000002,"hi":null,"text":"2,000","sources":[{"who":"Artificial Analysis","url":"https://artificialanalysis.ai/models","detail":"Homepage: Sonnet 5.5 is second at 56."},{"who":"benchgap measured","url":"https://benchgap.net/b/artificialanalysis/current","detail":"Measured 56.0."},{"who":"WhatLLM (cites AA)","url":"https://whatllm.org/best-ai-models","detail":"WhatLLM 56."},{"who":"Anthropic","url":"https://www.anthropic.com/claude-haiku-5-5","detail":"Sonnet 5.5 $2 in / $10 out."}],"note":"56 AA points / $0.028 per house turn = 2,000 points per dollar."},"haiku":{"lo":31000,"hi":null,"text":"31,000","sources":[{"who":"benchgap measured","url":"https://benchgap.net/b/artificialanalysis/current","detail":"Measured 43.4."},{"who":"WhatLLM (cites AA)","url":"https://whatllm.org/best-ai-models","detail":"WhatLLM 43.4."},{"who":"Anthropic","url":"https://www.anthropic.com/claude-haiku-5-5","detail":"Haiku 5.5 $0.10 / $0.50 under 100k, published 7 Oct 2026."}],"note":"43.4 AA points / $0.0014 per house turn = 31,000 points per dollar."},"astra":{"lo":376.4285714285714,"hi":null,"text":"376","sources":[{"who":"benchgap measured","url":"https://benchgap.net/b/artificialanalysis/current","detail":"Measured 52.7."},{"who":"BenchLeader","url":"https://www.benchleader.com/benchmarks/aa_intelligence_index","detail":"GPT-6 Astra max 52.7."},{"who":"WhatLLM (cites AA)","url":"https://whatllm.org/best-ai-models","detail":"WhatLLM 52.7."},{"who":"BenchLM OpenAI price page","url":"https://benchlm.ai/openai/api-pricing","detail":"GPT-6 Astra $10 in / $50 out, synced 14 Oct 2026."},{"who":"Nadir","url":"https://getnadir.com/blog/gpt-6-sol-luna-pricing-terra-retired-routing/","detail":"Same $10 / $50, citing OpenAI model pages, 23 Sep 2026."}],"note":"52.7 AA points / $0.14 per house turn = 376 points per dollar."},"sol":{"lo":1850,"hi":null,"text":"1,850","sources":[{"who":"benchgap measured","url":"https://benchgap.net/b/artificialanalysis/current","detail":"GPT-6.1 Sol measured 51.8."},{"who":"WhatLLM (cites AA)","url":"https://whatllm.org/best-ai-models","detail":"WhatLLM 51.8."},{"who":"BenchLM OpenAI price page","url":"https://benchlm.ai/openai/api-pricing","detail":"GPT-6.1 Sol $2 / $10, synced 14 Oct 2026."},{"who":"ArtificialWatch price catalog","url":"https://artificialwatch.com/llm-pricing","detail":"Same $2 / $10 in the 14 Oct catalog."}],"note":"51.8 AA points / $0.028 per house turn = 1,850 points per dollar."},"terra":{"lo":null,"hi":null,"text":"?","sources":[],"note":"Value is AA points per dollar. It stays blank when the AA score or the price is missing, or when the AA score is a range. Nothing is derived from a fight or a blank."},"luna":{"lo":null,"hi":null,"text":"?","sources":[],"note":"Value is AA points per dollar. It stays blank when the AA score or the price is missing, or when the AA score is a range. Nothing is derived from a fight or a blank."},"argon":{"lo":1878.571428571429,"hi":null,"text":"1,879","sources":[{"who":"benchgap measured","url":"https://benchgap.net/b/artificialanalysis/current","detail":"Gemini 4 Argon measured 52.6."},{"who":"BenchLeader","url":"https://www.benchleader.com/benchmarks/aa_intelligence_index","detail":"Argon high 52.6."},{"who":"ArtificialWatch price catalog","url":"https://artificialwatch.com/llm-pricing","detail":"Gemini 4 Argon $2 / $10, catalog 14 Oct 2026."}],"note":"52.6 AA points / $0.028 per house turn = 1,879 points per dollar."},"flash":{"lo":3895.2380952380954,"hi":null,"text":"3,895","sources":[{"who":"benchgap measured","url":"https://benchgap.net/b/artificialanalysis/current","detail":"Gemini 3.8 Flash measured 40.9."},{"who":"WhatLLM (cites AA)","url":"https://whatllm.org/best-ai-models","detail":"WhatLLM high config 40.9."},{"who":"VentureBeat","url":"https://venturebeat.com/technology/anthropic-launches-claude-haiku-5-5-with-90-api-price-reduction-matching-gpt-6-luna","detail":"Price table: Gemini 3.8 Flash $0.75 / $3.75."}],"note":"40.9 AA points / $0.0105 per house turn = 3,895 points per dollar."},"muse":{"lo":3185.430463576159,"hi":null,"text":"3,185","sources":[{"who":"benchgap measured","url":"https://benchgap.net/b/artificialanalysis/current","detail":"Muse Spark 1.3 measured 48.1."},{"who":"WhatLLM (cites AA)","url":"https://whatllm.org/best-ai-models","detail":"WhatLLM 48.1."},{"who":"ArtificialWatch price catalog","url":"https://artificialwatch.com/llm-pricing","detail":"Muse Spark 1.3 $1.25 / $4.25, catalog 14 Oct 2026."}],"note":"48.1 AA points / $0.0151 per house turn = 3,185 points per dollar."},"grok":{"lo":2004.3103448275863,"hi":null,"text":"2,004","sources":[{"who":"benchgap measured","url":"https://benchgap.net/b/artificialanalysis/current","detail":"Measured 46.5."},{"who":"WhatLLM (cites AA)","url":"https://whatllm.org/best-ai-models","detail":"WhatLLM xhigh 46.4."},{"who":"Artificial Analysis","url":"https://artificialanalysis.ai/models/grok-4-7","detail":"AA's own page displays 46, the rounded index."},{"who":"Artificial Analysis","url":"https://artificialanalysis.ai/models/grok-4-7","detail":"Grok 4.7 xhigh $2 in / $6 out."}],"note":"46.5 AA points / $0.0232 per house turn = 2,004 points per dollar."},"grokf":{"lo":null,"hi":null,"text":"?","sources":[],"note":"Value is AA points per dollar. It stays blank when the AA score or the price is missing, or when the AA score is a range. Nothing is derived from a fight or a blank."},"q27":{"lo":null,"hi":null,"text":"?","sources":[],"note":"Value is AA points per dollar. It stays blank when the AA score or the price is missing, or when the AA score is a range. Nothing is derived from a fight or a blank."}},"aa":{"fable":{"lo":53.4,"hi":null,"text":"53.4","sources":[{"who":"benchgap measured","url":"https://benchgap.net/b/artificialanalysis/current","detail":"Measured 15 Oct 2026."},{"who":"BenchLeader","url":"https://www.benchleader.com/benchmarks/aa_intelligence_index","detail":"Fable 5.1 max 53.4 on AA Index v4.3.2."},{"who":"WhatLLM (cites AA)","url":"https://whatllm.org/best-ai-models","detail":"WhatLLM 53.4."}]},"opus":{"lo":57.6,"hi":null,"text":"57.6","sources":[{"who":"Artificial Analysis","url":"https://artificialanalysis.ai/models","detail":"Homepage rounds the leader to 58."},{"who":"benchgap measured","url":"https://benchgap.net/b/artificialanalysis/current","detail":"Measured 57.6."},{"who":"WhatLLM (cites AA)","url":"https://whatllm.org/best-ai-models","detail":"WhatLLM 57.6."}],"note":"Same index. 58 on the AA homepage is the rounded leader line."},"sonnet":{"lo":56,"hi":null,"text":"56","sources":[{"who":"Artificial Analysis","url":"https://artificialanalysis.ai/models","detail":"Homepage: Sonnet 5.5 is second at 56."},{"who":"benchgap measured","url":"https://benchgap.net/b/artificialanalysis/current","detail":"Measured 56.0."},{"who":"WhatLLM (cites AA)","url":"https://whatllm.org/best-ai-models","detail":"WhatLLM 56."}]},"haiku":{"lo":43.4,"hi":null,"text":"43.4","sources":[{"who":"benchgap measured","url":"https://benchgap.net/b/artificialanalysis/current","detail":"Measured 43.4."},{"who":"WhatLLM (cites AA)","url":"https://whatllm.org/best-ai-models","detail":"WhatLLM 43.4."}]},"astra":{"lo":52.7,"hi":null,"text":"52.7","sources":[{"who":"benchgap measured","url":"https://benchgap.net/b/artificialanalysis/current","detail":"Measured 52.7."},{"who":"BenchLeader","url":"https://www.benchleader.com/benchmarks/aa_intelligence_index","detail":"GPT-6 Astra max 52.7."},{"who":"WhatLLM (cites AA)","url":"https://whatllm.org/best-ai-models","detail":"WhatLLM 52.7."}]},"sol":{"lo":51.8,"hi":null,"text":"51.8","sources":[{"who":"benchgap measured","url":"https://benchgap.net/b/artificialanalysis/current","detail":"GPT-6.1 Sol measured 51.8."},{"who":"WhatLLM (cites AA)","url":"https://whatllm.org/best-ai-models","detail":"WhatLLM 51.8."}],"note":"GPT-5.6 Sol measured 58.9 on the same index, which is higher. That older score is the tick, not this bar."},"terra":{"lo":42.1,"hi":54.9,"text":"42.1/54.9","sources":[{"who":"WhatLLM (cites AA)","url":"https://whatllm.org/best-ai-models","detail":"WhatLLM lists GPT-5.6 Terra at 42.1."},{"who":"benchgap measured","url":"https://benchgap.net/b/artificialanalysis/current","detail":"benchgap lists GPT-5.6 Terra measured at 54.9."}],"note":"The two mirrors do not agree. Not averaged, and not used for Value."},"luna":{"lo":null,"hi":null,"text":"?","sources":[],"note":"benchgap's 51.2 is GPT-5.6 Luna, not GPT-6 Luna. No GPT-6 Luna point on AA v4.3.2 in this pull."},"argon":{"lo":52.6,"hi":null,"text":"52.6","sources":[{"who":"benchgap measured","url":"https://benchgap.net/b/artificialanalysis/current","detail":"Gemini 4 Argon measured 52.6."},{"who":"BenchLeader","url":"https://www.benchleader.com/benchmarks/aa_intelligence_index","detail":"Argon high 52.6."}],"note":"Waitlist. Can rank. Cannot be the best live pick."},"flash":{"lo":40.9,"hi":null,"text":"40.9","sources":[{"who":"benchgap measured","url":"https://benchgap.net/b/artificialanalysis/current","detail":"Gemini 3.8 Flash measured 40.9."},{"who":"WhatLLM (cites AA)","url":"https://whatllm.org/best-ai-models","detail":"WhatLLM high config 40.9."}]},"muse":{"lo":48.1,"hi":null,"text":"48.1","sources":[{"who":"benchgap measured","url":"https://benchgap.net/b/artificialanalysis/current","detail":"Muse Spark 1.3 measured 48.1."},{"who":"WhatLLM (cites AA)","url":"https://whatllm.org/best-ai-models","detail":"WhatLLM 48.1."}],"note":"Muse Wonder is a different model (about 52 to 56) and is not on this roster."},"grok":{"lo":46.5,"hi":null,"text":"46.5","sources":[{"who":"benchgap measured","url":"https://benchgap.net/b/artificialanalysis/current","detail":"Measured 46.5."},{"who":"WhatLLM (cites AA)","url":"https://whatllm.org/best-ai-models","detail":"WhatLLM xhigh 46.4."},{"who":"Artificial Analysis","url":"https://artificialanalysis.ai/models/grok-4-7","detail":"AA's own page displays 46, the rounded index."}],"note":"46, 46.4 and 46.5 are the same index at different rounding. Bar uses 46.5."},"grokf":{"lo":null,"hi":null,"text":"?","sources":[],"note":"No AA v4.3.2 row for Grok 4.7 Fast."},"q27":{"lo":null,"hi":null,"text":"?","sources":[],"note":"benchgap lists Qwen3.8 Max at 45.4. That is not the Studio 27B. No AA v4.3.2 point for Qwen3.8-27B in this pull."}},"gdp":{"fable":{"lo":1764,"hi":null,"text":"1764","sources":[{"who":"LLMLearner mirror","url":"https://llmlearner.com/rankings/gdpval-aa-v2","detail":"Fable 5.1 max, Elo 1764. Partial board, last result the mirror dates 3 Oct 2026."}]},"opus":{"lo":1846,"hi":null,"text":"1846","sources":[{"who":"LLMLearner mirror","url":"https://llmlearner.com/rankings/gdpval-aa-v2","detail":"Opus 5.5 max, Elo 1846. Human anchor is 1000."}]},"sonnet":{"lo":null,"hi":null,"text":"?","sources":[],"note":"Not on the partial GDPval-AA v2 mirror this pull."},"haiku":{"lo":null,"hi":null,"text":"?","sources":[],"note":"Not on the partial GDPval-AA v2 mirror this pull."},"astra":{"lo":null,"hi":null,"text":"?","sources":[],"note":"Not on the partial GDPval-AA v2 mirror this pull."},"sol":{"lo":null,"hi":null,"text":"?","sources":[],"note":"Not on the partial GDPval-AA v2 mirror this pull."},"terra":{"lo":null,"hi":null,"text":"?","sources":[],"note":"Not on the partial GDPval-AA v2 mirror this pull."},"luna":{"lo":null,"hi":null,"text":"?","sources":[],"note":"Not on the partial GDPval-AA v2 mirror this pull."},"argon":{"lo":null,"hi":null,"text":"?","sources":[],"note":"Not on the partial GDPval-AA v2 mirror this pull."},"flash":{"lo":null,"hi":null,"text":"?","sources":[],"note":"Not on the partial GDPval-AA v2 mirror this pull."},"muse":{"lo":1703,"hi":null,"text":"1703","sources":[{"who":"LLMLearner mirror","url":"https://llmlearner.com/rankings/gdpval-aa-v2","detail":"Muse Spark 1.3, Elo 1703, with tools and internet."}]},"grok":{"lo":1695,"hi":null,"text":"1695","sources":[{"who":"LLMLearner mirror","url":"https://llmlearner.com/rankings/gdpval-aa-v2","detail":"Grok 4.7 thinking high, Elo 1695."}]},"grokf":{"lo":null,"hi":null,"text":"?","sources":[],"note":"Not on the partial GDPval-AA v2 mirror this pull."},"q27":{"lo":null,"hi":null,"text":"?","sources":[],"note":"Not on the partial GDPval-AA v2 mirror. Do not borrow Qwen3.8 Max."}},"omni":{"fable":{"lo":43,"hi":null,"text":"43","sources":[{"who":"evals.report","url":"https://evals.report/benchmarks/aa-omniscience","detail":"Fable 5.1 official index 43, dated 1 Sep 2026."}],"note":"Higher is the knowledge index, not the hallucination rate. The index page is older than this week."},"opus":{"lo":46,"hi":null,"text":"46","sources":[{"who":"evals.report","url":"https://evals.report/benchmarks/aa-omniscience","detail":"Opus 5.5 official index 46, dated 22 Sep 2026. Top of that table."}]},"sonnet":{"lo":null,"hi":null,"text":"?","sources":[],"note":"No Sonnet 5.5 row on the evals.report AA-Omniscience table."},"haiku":{"lo":null,"hi":null,"text":"?","sources":[],"note":"No Haiku 5.5 row. Older Haiku hallucination rates are a different model."},"astra":{"lo":44,"hi":null,"text":"44","sources":[{"who":"evals.report","url":"https://evals.report/benchmarks/aa-omniscience","detail":"GPT-6 Astra high, index 44, 3 Sep 2026."}],"note":"Separate fact: The Batch, 13 Oct 2026, puts Astra's hallucination rate at 51% on the questions it misses. That rate is not this index."},"sol":{"lo":null,"hi":null,"text":"?","sources":[],"note":"evals.report lists GPT-6 Sol at 27, not GPT-6.1 Sol. The 6.1 row was not on the table."},"terra":{"lo":null,"hi":null,"text":"?","sources":[],"note":"No GPT-5.6 Terra row on the omniscience table."},"luna":{"lo":null,"hi":null,"text":"?","sources":[],"note":"No GPT-6 Luna row."},"argon":{"lo":null,"hi":null,"text":"?","sources":[],"note":"No Argon index on evals.report. The Batch, 13 Oct 2026, says Argon hallucinates on 15% of missed questions, versus 51% for Astra. That is a rate, not this index, so it is not plotted as a bar."},"flash":{"lo":30,"hi":null,"text":"30","sources":[{"who":"evals.report","url":"https://evals.report/benchmarks/aa-omniscience","detail":"Gemini 3.8 Flash high, index 30, 2 Sep 2026."}]},"muse":{"lo":25,"hi":null,"text":"25","sources":[{"who":"evals.report","url":"https://evals.report/benchmarks/aa-omniscience","detail":"Muse Spark 1.3 max, index 25, 2 Sep 2026."}]},"grok":{"lo":32,"hi":null,"text":"32","sources":[{"who":"evals.report","url":"https://evals.report/benchmarks/aa-omniscience","detail":"Grok 4.7 xhigh, index 32, 21 Sep 2026."}]},"grokf":{"lo":null,"hi":null,"text":"?","sources":[],"note":"No Fast row."},"q27":{"lo":null,"hi":null,"text":"?","sources":[],"note":"No Studio 27B row."}},"osworld":{"fable":{"lo":77.9,"hi":null,"text":"77.9","sources":[{"who":"Steel OSWorld 2.0","url":"https://leaderboard.steel.dev/leaderboards/osworld-2/","detail":"Claude Fable 5.1, 77.9% partial, Sep 2026. 500-step budget. Some tasks and grading were modified."},{"who":"Yutori","url":"https://yutori.com/leaderboards/osworld-2","detail":"Same 77.9% at 500 steps, checked 3 Sep 2026."}],"note":"Partial score, not binary completion. Muse's binary completion on the same board is 32%."},"opus":{"lo":null,"hi":null,"text":"?","sources":[],"note":"Steel lists Claude Opus 5 at 70.6, not Opus 5.5. No Opus 5.5 row on OSWorld 2.0."},"sonnet":{"lo":null,"hi":null,"text":"?","sources":[],"note":"No Sonnet 5.5 row on Steel or Yutori OSWorld 2.0."},"haiku":{"lo":null,"hi":null,"text":"?","sources":[],"note":"No Haiku 5.5 row on OSWorld 2.0."},"astra":{"lo":72.6,"hi":null,"text":"72.6","sources":[{"who":"Steel OSWorld 2.0","url":"https://leaderboard.steel.dev/leaderboards/osworld-2/","detail":"GPT-6 Astra 72.6%, Sep 2026."},{"who":"Yutori","url":"https://yutori.com/leaderboards/osworld-2","detail":"Same 72.6% at 500 steps."}]},"sol":{"lo":70.5,"hi":null,"text":"70.5","sources":[{"who":"Steel OSWorld 2.0","url":"https://leaderboard.steel.dev/leaderboards/osworld-2/","detail":"GPT-6.1 Sol 70.5%, Sep 2026. Yutori's 62.7 is GPT-5.6 Sol, a different model."}],"note":"One board for 6.1. The older Sol is the tick."},"terra":{"lo":50.2,"hi":null,"text":"50.2","sources":[{"who":"Yutori","url":"https://yutori.com/leaderboards/osworld-2","detail":"GPT-5.6 Terra 50.2% at 500 steps. Not on the Steel table."}],"note":"One scout. Not on the Steel table."},"luna":{"lo":null,"hi":null,"text":"?","sources":[],"note":"Yutori lists GPT-5.6 Luna at 45.6, not GPT-6 Luna."},"argon":{"lo":69.2,"hi":null,"text":"69.2","sources":[{"who":"Steel OSWorld 2.0","url":"https://leaderboard.steel.dev/leaderboards/osworld-2/","detail":"Gemini 4 Argon 69.2%, Sep 2026."}],"note":"Waitlist model."},"flash":{"lo":59,"hi":null,"text":"59.0","sources":[{"who":"Yutori","url":"https://yutori.com/leaderboards/osworld-2","detail":"Gemini 3.8 Flash 59.0% with batched tools. Not on the Steel table."}],"note":"One scout, batched-tool setting."},"muse":{"lo":66.9,"hi":null,"text":"66.9","sources":[{"who":"Steel OSWorld 2.0","url":"https://leaderboard.steel.dev/leaderboards/osworld-2/","detail":"Muse Spark 1.3 partial 66.9%. Binary completion called out at 32.0%."},{"who":"Yutori","url":"https://yutori.com/leaderboards/osworld-2","detail":"Same 66.9%."}]},"grok":{"lo":null,"hi":null,"text":"?","sources":[],"note":"No Grok 4.7 row on Steel or Yutori OSWorld 2.0."},"grokf":{"lo":null,"hi":null,"text":"?","sources":[],"note":"No Grok 4.7 Fast row on OSWorld 2.0."},"q27":{"lo":null,"hi":null,"text":"?","sources":[],"note":"OSWorld-Verified lists Qwen3.8-27B at 84.3. That is a different suite and is not plotted here."}},"terminal":{"fable":{"lo":57.9,"hi":null,"text":"57.9","sources":[{"who":"unifybench","url":"https://unifybench.ai/benchmarks/terminal-bench-4.0","detail":"Official-board mirror: Fable 5.1 57.88%, 1 Sep 2026."},{"who":"benchlm","url":"https://benchlm.ai/benchmarks/terminal-bench-4","detail":"Same harness mirror: 57.88%."}]},"opus":{"lo":64.8,"hi":66.4,"text":"64.8/66.4","sources":[{"who":"benchlm","url":"https://benchlm.ai/benchmarks/terminal-bench-4","detail":"Opus 5.5 max 64.85% on the public snapshot, 15 Oct 2026."},{"who":"BenchmarkList","url":"https://benchmarklist.com/benchmarks/terminal_bench_4/","detail":"Opus 5.5 listed at 66.4 and at 64.8 in the system-card row."}],"note":"Tight range across the public mirrors. Not averaged."},"sonnet":{"lo":61.8,"hi":70.6,"text":"61.8/70.6","sources":[{"who":"unifybench","url":"https://unifybench.ai/benchmarks/terminal-bench-4.0","detail":"Official-board mirror: Sonnet 5.5 61.82%."},{"who":"benchlm","url":"https://benchlm.ai/benchmarks/terminal-bench-4","detail":"Same 61.82%."},{"who":"BenchmarkList","url":"https://benchmarklist.com/benchmarks/terminal_bench_4/","detail":"Launch-post row: Sonnet 5.5 max 70.6%, 28 Sep 2026."}],"note":"The launch post and the public-board mirror do not agree. Range, not a winner."},"haiku":{"lo":null,"hi":null,"text":"?","sources":[],"note":"No Haiku 5.5 row on the Terminal-Bench 4.0 mirrors checked."},"astra":{"lo":58.2,"hi":null,"text":"58.2","sources":[{"who":"unifybench","url":"https://unifybench.ai/benchmarks/terminal-bench-4.0","detail":"Official-board mirror: GPT-6 Astra 58.18%."},{"who":"benchlm","url":"https://benchlm.ai/benchmarks/terminal-bench-4","detail":"Same 58.18%."}]},"sol":{"lo":58.2,"hi":null,"text":"58.2","sources":[{"who":"unifybench","url":"https://unifybench.ai/benchmarks/terminal-bench-4.0","detail":"GPT-6.1 Sol 58.18%, official-board mirror."},{"who":"benchlm","url":"https://benchlm.ai/benchmarks/terminal-bench-4","detail":"Same 58.18%."}]},"terra":{"lo":21.5,"hi":23.6,"text":"21.5/23.6","sources":[{"who":"unifybench","url":"https://unifybench.ai/benchmarks/terminal-bench-4.0","detail":"GPT-5.6 Terra 21.52%."},{"who":"BenchmarkList","url":"https://benchmarklist.com/benchmarks/terminal_bench_4/","detail":"Launch post 23.6 and model card 21.5."}]},"luna":{"lo":16.4,"hi":null,"text":"16.4","sources":[{"who":"unifybench","url":"https://unifybench.ai/benchmarks/terminal-bench-4.0","detail":"GPT-6 Luna 16.36%, official-board mirror, 22 Sep 2026."}],"note":"One mirror."},"argon":{"lo":57.4,"hi":null,"text":"57.4","sources":[{"who":"BenchmarkList","url":"https://benchmarklist.com/benchmarks/terminal_bench_4/","detail":"Gemini 4 Argon 57.4, marked self-reported, 30 Sep 2026."}],"note":"Self-reported. The AA Terminal-Bench harness is a different test and is not mixed in."},"flash":{"lo":19.1,"hi":null,"text":"19.1","sources":[{"who":"unifybench","url":"https://unifybench.ai/benchmarks/terminal-bench-4.0","detail":"Gemini 3.8 Flash 19.09%."},{"who":"BenchmarkList","url":"https://benchmarklist.com/benchmarks/terminal_bench_4/","detail":"19.1% launch post."}]},"muse":{"lo":14.6,"hi":null,"text":"14.6","sources":[{"who":"unifybench","url":"https://unifybench.ai/benchmarks/terminal-bench-4.0","detail":"Muse Spark 1.3 14.55% on the tbench.ai mirror."}],"note":"An AA Terminal-Bench number near 33 is a different harness and is not plotted."},"grok":{"lo":37.6,"hi":null,"text":"37.6","sources":[{"who":"unifybench","url":"https://unifybench.ai/benchmarks/terminal-bench-4.0","detail":"Grok 4.7 37.58%, Grok Build, xhigh."},{"who":"BenchmarkList","url":"https://benchmarklist.com/benchmarks/terminal_bench_4/","detail":"Same 37.6, launch post."}],"note":"Run inside Grok Build, not a plain API call."},"grokf":{"lo":null,"hi":null,"text":"?","sources":[],"note":"No separate Grok 4.7 Fast row. The 37.6 row is Grok 4.7 xhigh."},"q27":{"lo":null,"hi":null,"text":"?","sources":[],"note":"No Qwen3.8-27B row. Qwen3.8 Max at 27.0 is a different model."}},"deepswe":{"fable":{"lo":67.4,"hi":null,"text":"67.4","sources":[{"who":"unifybench","url":"https://unifybench.ai/benchmarks/deepswe-v1.1","detail":"Lab self-report, not the public board: Fable 5.1 mean 67.4 on 113 tasks, five trials."}],"note":"Lab run. The public board row for Fable 5.1 was not in the score-sorted top."},"opus":{"lo":null,"hi":null,"text":"?","sources":[],"note":"Public DeepSWE v1.1 mirror lists Opus 5 at 73.6, not Opus 5.5."},"sonnet":{"lo":null,"hi":null,"text":"?","sources":[],"note":"Public mirror lists Sonnet 5 at 53.8, not Sonnet 5.5."},"haiku":{"lo":null,"hi":null,"text":"?","sources":[],"note":"No Haiku 5.5 row on the DeepSWE v1.1 public mirror."},"astra":{"lo":74.1,"hi":null,"text":"74.1","sources":[{"who":"unifybench","url":"https://unifybench.ai/benchmarks/deepswe-v1.1","detail":"Official board: GPT-6 Astra 74.1%, 22 Sep 2026. Top of that mirror."}]},"sol":{"lo":null,"hi":null,"text":"?","sources":[],"note":"Public mirror lists GPT-5.6 Sol at 72.7, not GPT-6.1 Sol."},"terra":{"lo":69.6,"hi":null,"text":"69.6","sources":[{"who":"unifybench","url":"https://unifybench.ai/benchmarks/deepswe-v1.1","detail":"Official board: GPT-5.6 Terra 69.6%."}]},"luna":{"lo":null,"hi":null,"text":"?","sources":[],"note":"Public mirror lists GPT-5.6 Luna at 67.2, not GPT-6 Luna."},"argon":{"lo":null,"hi":null,"text":"?","sources":[],"note":"No Argon row on the official-board mirror. A second site's 77.9 would put Argon first, but Argon is absent from the score-sorted public top, so that number is not used."},"flash":{"lo":73.8,"hi":null,"text":"73.8","sources":[{"who":"unifybench","url":"https://unifybench.ai/benchmarks/deepswe-v1.1","detail":"Official board: Gemini 3.8 Flash 73.8%."}]},"muse":{"lo":null,"hi":null,"text":"?","sources":[],"note":"No Muse Spark 1.3 row. Spark 1.2 is 54.9 and Spark 1.1 is 53.3 on the public board."},"grok":{"lo":null,"hi":null,"text":"?","sources":[],"note":"No Grok 4.7 row. Grok 4.6 is 67.5 on the public board."},"grokf":{"lo":null,"hi":null,"text":"?","sources":[],"note":"No Fast row."},"q27":{"lo":null,"hi":null,"text":"?","sources":[],"note":"No Qwen3.8-27B row. Qwen 3.8 Max at 57.5 is a different model and is not plotted."}}},"ticks":{"cost":{},"speed":{},"value":{},"aa":{"fable":[{"ver":"5","value":49.6,"detail":"Fable 5 measured 49.6 on benchgap."}],"opus":[{"ver":"5","value":50.8,"detail":"Opus 5 measured 50.8."},{"ver":"4.8","value":41.8,"detail":"Opus 4.8 measured 41.8."}],"sol":[{"ver":"6","value":47.6,"detail":"GPT-6 Sol measured 47.6."},{"ver":"5.6","value":58.9,"detail":"GPT-5.6 Sol measured 58.9, higher than GPT-6.1 Sol."}],"grok":[{"ver":"4.6","value":44.3,"detail":"Grok 4.6 measured 44.3."},{"ver":"4.5","value":38.8,"detail":"Grok 4.5 measured 38.8."}],"muse":[{"ver":"1.2","value":39.6,"detail":"Muse Spark 1.2 measured 39.6."}],"flash":[{"ver":"3.7","value":39.1,"detail":"Gemini 3.7 Flash measured 39.1."},{"ver":"3.5","value":50.2,"detail":"Gemini 3.5 Flash measured 50.2, higher than 3.8."}],"luna":[{"ver":"5.6","value":51.2,"detail":"GPT-5.6 Luna measured 51.2. The current bar is still unpublished."}]},"gdp":{"opus":[{"ver":"5","value":1735,"detail":"Opus 5 Elo 1735 on the same partial mirror."}]},"omni":{"fable":[{"ver":"5","value":43,"detail":"Fable 5 index 43, same table."}],"opus":[{"ver":"5","value":37,"detail":"Opus 5 index 37."}],"grok":[{"ver":"4.6","value":30,"detail":"Grok 4.6 index 30."}],"sol":[{"ver":"6","value":27,"detail":"GPT-6 Sol index 27. Not 6.1."}]},"osworld":{"fable":[{"ver":"5","value":66.1,"detail":"Fable 5 partial 66.1 on Steel."}],"opus":[{"ver":"5","value":70.6,"detail":"Opus 5 partial 70.6. Opus 5.5 itself is unpublished."},{"ver":"4.8","value":54.8,"detail":"Opus 4.8 batched tools 54.8."}],"sol":[{"ver":"5.6","value":62.6,"detail":"GPT-5.6 Sol 62.6 on Steel. Yutori's Snorkel run is 62.7."}],"luna":[{"ver":"5.6","value":45.6,"detail":"GPT-5.6 Luna 45.6 on Yutori."}]},"terminal":{"fable":[{"ver":"5","value":44.6,"detail":"Fable 5 44.55% on the official-board mirror."}],"opus":[{"ver":"5","value":53.9,"detail":"Opus 5 53.94% on the official-board mirror."}],"sonnet":[{"ver":"5","value":12.4,"detail":"Sonnet 5 12.42% on the official-board mirror."}],"sol":[{"ver":"6","value":49.4,"detail":"GPT-6 Sol 49.39%."},{"ver":"5.6","value":37.3,"detail":"GPT-5.6 Sol 37.27%."}],"grok":[{"ver":"4.6","value":20.3,"detail":"Grok 4.6 20.3%."}],"flash":[{"ver":"3.7","value":11.2,"detail":"Gemini 3.7 Flash 11.21%."}],"luna":[{"ver":"5.6","value":17.3,"detail":"GPT-5.6 Luna 17.27%, slightly above GPT-6 Luna."}]},"deepswe":{"fable":[{"ver":"5","value":69.9,"detail":"Fable 5 69.9% on the public board. The 5.1 bar is the lab run, so this tick can sit to the right."}],"opus":[{"ver":"5","value":73.6,"detail":"Opus 5 73.6%. Opus 5.5 unpublished."}],"sonnet":[{"ver":"5","value":53.8,"detail":"Sonnet 5 53.8%."}],"sol":[{"ver":"5.6","value":72.7,"detail":"GPT-5.6 Sol 72.7%. GPT-6.1 unpublished."}],"grok":[{"ver":"4.6","value":67.5,"detail":"Grok 4.6 67.5%."}],"flash":[{"ver":"3.7","value":65.5,"detail":"Gemini 3.7 Flash 65.5%."}],"luna":[{"ver":"5.6","value":67.2,"detail":"GPT-5.6 Luna 67.2%."}],"muse":[{"ver":"1.2","value":54.9,"detail":"Muse Spark 1.2 54.9%."},{"ver":"1.1","value":53.3,"detail":"Muse Spark 1.1 53.3%."}]}},"prices":{"fable":{"inn":10,"out":50,"note":"Standard rate. BenchLeader's $20 figure is the 3:1 blended price of $10 and $50, not a second rate.","sources":[{"who":"ArtificialWatch price catalog","url":"https://artificialwatch.com/llm-pricing","detail":"Fable 5.1 listed $10 in / $50 out, catalog 14 Oct 2026."},{"who":"BenchLeader frontier","url":"https://www.benchleader.com/","detail":"Frontier table shows $20, which matches a 3:1 blend."}]},"opus":{"inn":4,"out":20,"note":"Read off Anthropic's own Haiku 5.5 comparison table.","sources":[{"who":"Anthropic","url":"https://www.anthropic.com/claude-haiku-5-5","detail":"Haiku 5.5 launch page table: Opus 5.5 $4 in / $20 out."}]},"sonnet":{"inn":2,"out":10,"note":"Same Anthropic table.","sources":[{"who":"Anthropic","url":"https://www.anthropic.com/claude-haiku-5-5","detail":"Sonnet 5.5 $2 in / $10 out."}]},"haiku":{"inn":0.1,"out":0.5,"note":"Rate below 100,000 input tokens. Above that it is $0.50 / $2.50. This house turn is 8,000 in.","sources":[{"who":"Anthropic","url":"https://www.anthropic.com/claude-haiku-5-5","detail":"Haiku 5.5 $0.10 / $0.50 under 100k, published 7 Oct 2026."}]},"astra":{"inn":10,"out":50,"note":"Prompts over 272k are billed higher ($20 / $75). This basket is not over that line.","sources":[{"who":"BenchLM OpenAI price page","url":"https://benchlm.ai/openai/api-pricing","detail":"GPT-6 Astra $10 in / $50 out, synced 14 Oct 2026."},{"who":"Nadir","url":"https://getnadir.com/blog/gpt-6-sol-luna-pricing-terra-retired-routing/","detail":"Same $10 / $50, citing OpenAI model pages, 23 Sep 2026."}]},"sol":{"inn":2,"out":10,"note":"GPT-6.1 Sol kept the GPT-6 Sol rate. Cached input is $0.10.","sources":[{"who":"BenchLM OpenAI price page","url":"https://benchlm.ai/openai/api-pricing","detail":"GPT-6.1 Sol $2 / $10, synced 14 Oct 2026."},{"who":"ArtificialWatch price catalog","url":"https://artificialwatch.com/llm-pricing","detail":"Same $2 / $10 in the 14 Oct catalog."}]},"terra":{"inn":2,"out":12,"note":"One write-up that cites OpenAI's model page. No second price page confirmed it on this pull. There is no GPT-6 Terra yet.","sources":[{"who":"Nadir","url":"https://getnadir.com/blog/gpt-6-sol-luna-pricing-terra-retired-routing/","detail":"GPT-5.6 Terra $2 in / $12 out. One source."}]},"luna":{"inn":0.1,"out":0.5,"note":"Matches Haiku's low rate. Higher above 272k input.","sources":[{"who":"BenchLM OpenAI price page","url":"https://benchlm.ai/openai/api-pricing","detail":"GPT-6 Luna $0.10 / $0.50."},{"who":"VentureBeat","url":"https://venturebeat.com/technology/anthropic-launches-claude-haiku-5-5-with-90-api-price-reduction-matching-gpt-6-luna","detail":"Haiku 5.5 story confirms Luna matches $0.10 / $0.50."}]},"argon":{"inn":2,"out":10,"note":"Price is public. Access is not. Waitlist, Google Fairwind.","sources":[{"who":"ArtificialWatch price catalog","url":"https://artificialwatch.com/llm-pricing","detail":"Gemini 4 Argon $2 / $10, catalog 14 Oct 2026."}]},"flash":{"inn":0.75,"out":3.75,"note":"VentureBeat calls this a promotional standard rate through 31 Dec 2026.","sources":[{"who":"VentureBeat","url":"https://venturebeat.com/technology/anthropic-launches-claude-haiku-5-5-with-90-api-price-reduction-matching-gpt-6-luna","detail":"Price table: Gemini 3.8 Flash $0.75 / $3.75."}]},"muse":{"inn":1.25,"out":4.25,"note":"Muse Spark 1.3, not Muse Wonder.","sources":[{"who":"ArtificialWatch price catalog","url":"https://artificialwatch.com/llm-pricing","detail":"Muse Spark 1.3 $1.25 / $4.25, catalog 14 Oct 2026."}]},"grok":{"inn":2,"out":6,"note":"Under 200k prompt. Over that, $4 / $12. AA's own page lists this rate.","sources":[{"who":"Artificial Analysis","url":"https://artificialanalysis.ai/models/grok-4-7","detail":"Grok 4.7 xhigh $2 in / $6 out."}]},"grokf":null,"q27":{"inn":0,"out":0,"note":"No API bill. Electricity on the Studio is not in this number.","sources":[{"who":"This roster","url":"https://github.com/bennett-maxwell/fki-ai-skills/blob/main/skills/model-comparison-skill/SKILL.md","detail":"Q27B is the local Studio model. API price is $0."}]}},"jobs":[{"id":"boss","label":"A boss who plans","blurb":"Open Boss. Use the AA index for raw smarts, GDPval if the job is a finished document, and Omniscience if a made-up number would be expensive. Then check Cost so you are not paying Astra money for Opus work."},{"id":"desk","label":"Hands on a computer","blurb":"Open Hands and read OSWorld first. That score is partial completion of a desktop task, not a speed. Seconds for a 500-step computer task are not published, so this board does not invent them."},{"id":"repo","label":"A worker in the repo","blurb":"Open Hands. Terminal-Bench and DeepSWE are different jobs. Do not average them. If a model is missing, it was not on the public board, not a zero."},{"id":"cheap","label":"Lots of short turns","blurb":"Open Cost, then Speed, then Value. Skip any question mark before you call a model efficient. Haiku has all three. Luna matches Haiku on price, and its quality score is still unpublished."}],"rejected":["WhatLLM lists GPT-6.1 Sol at 361 tok/s. The BenchLeader frontier column says 59. 361 is not used.","WhatLLM lists Grok 4.7 at 61 tok/s. Artificial Analysis' own Grok page says 80. 61 is not used.","Another site puts Gemini 4 Argon at 77.9 on DeepSWE, above the public mirror's leader. Argon does not appear in that mirror's score-sorted top, so 77.9 is not used.","OSWorld-Verified (Qwen3.8-27B 84.3) is not OSWorld 2.0. It is not plotted on the computer card.","Muse Wonder scores are not Muse Spark 1.3. Wonder is not on this roster.","Qwen3.8 Max is not the Studio 27B. Max scores are not plotted.","GPT-5.6 Luna's AA score is not GPT-6 Luna's score. It is a tick on Luna's row only.","Terra's two AA mirrors (42.1 and 54.9) are shown as a range. Value is left blank so a fight is not turned into a fake efficiency."],"weights":[{"tier":"A, weight 3","use":"The publisher's own page or the official board. This is the bar when it exists."},{"tier":"B, weight 2","use":"An independent mirror that names the official board. If it is within 1.5 points, it confirms. If it is further, the row becomes a range."},{"tier":"C, weight 1","use":"An aggregator with no method of its own. Used only when no A or B number exists, and the row says one board."},{"tier":"0","use":"Estimated scores, a different suite, or a number that would reorder an official board it does not appear on. Never plotted."}]}</script>
+<script>const D = JSON.parse(document.getElementById("visual-data").textContent);
+const TABS = [
+  ["pick", "Pick"],
+  ["cost", "Cost"],
+  ["speed", "Speed"],
+  ["value", "Value"],
+  ["boss", "Boss"],
+  ["hands", "Hands"],
+  ["sources", "Sources"],
+];
+
+function modelById(id) {
+  return D.models.find((m) => m.id === id);
+}
+function metricById(id) {
+  return D.metrics.find((m) => m.id === id);
+}
+function scaleMax(id) {
+  let max = 0;
+  for (const m of D.models) {
+    const c = D.cells[id][m.id];
+    if (c && c.lo != null) max = Math.max(max, c.lo, c.hi == null ? c.lo : c.hi);
+    for (const t of (D.ticks[id] && D.ticks[id][m.id]) || []) max = Math.max(max, t.value);
+  }
+  return max || 1;
+}
+function ranked(id) {
+  const metric = metricById(id);
+  const rows = D.models.map((model) => ({ model, cell: D.cells[id][model.id] }));
+  rows.sort((a, b) => {
+    const av = a.cell.lo;
+    const bv = b.cell.lo;
+    if (av == null && bv == null) return a.model.tag.localeCompare(b.model.tag);
+    if (av == null) return 1;
+    if (bv == null) return -1;
+    const as = metric.higher ? av : a.cell.hi == null ? av : a.cell.hi;
+    const bs = metric.higher ? bv : b.cell.hi == null ? bv : b.cell.hi;
+    if (as === bs) return a.model.tag.localeCompare(b.model.tag);
+    return metric.higher ? bs - as : as - bs;
+  });
+  return rows;
+}
+function bestLive(id) {
+  const live = ranked(id).filter((r) => r.model.bestLive && r.cell.lo != null);
+  if (!live.length) return { kind: "none" };
+  const top = live[0];
+  if (top.cell.hi != null) return { kind: "range", model: top.model, cell: top.cell };
+  return { kind: "one", model: top.model, cell: top.cell };
+}
+function headline(id) {
+  const metric = metricById(id);
+  const b = bestLive(id);
+  const dir = metric.higher ? "Higher is better." : "Lower is better.";
+  if (b.kind === "none") return "No live model has a published number. " + dir;
+  if (b.kind === "range") return "Sources disagree on " + b.model.tag + ": " + b.cell.text + ". " + dir;
+  return "Best live: " + b.model.tag + " " + b.cell.text + ". " + dir;
+}
+function lineFor(id, fallback) {
+  const b = bestLive(id);
+  if (b.kind === "none") return fallback;
+  if (b.kind === "range") return b.model.tag + " " + b.cell.text + ", and the sources disagree";
+  return b.model.tag + " at " + b.cell.text;
+}
+function placeTicks(list, max) {
+  const top = [];
+  const bot = [];
+  return list.map((tick) => {
+    const p = tick.value / max;
+    const hit = (arr) => arr.some((q) => Math.abs(q - p) < 0.22);
+    if (!hit(top)) {
+      top.push(p);
+      return { tick, slot: "top", p };
+    }
+    if (!hit(bot)) {
+      bot.push(p);
+      return { tick, slot: "bot", p };
+    }
+    return { tick, slot: "hide", p };
+  });
+}
+function mark(model) {
+  const c = model.ink;
+  if (model.mark === "a")
+    return '<svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 1.5 L14.5 14.5 H11.4 L10.2 11.2 H5.8 L4.6 14.5 H1.5 Z M6.6 9 H9.4 L8 5.2 Z" fill="' + c + '"/></svg>';
+  if (model.mark === "hex")
+    return '<svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 1.2 L13.6 4.4 V11.6 L8 14.8 L2.4 11.6 V4.4 Z" fill="' + c + '"/></svg>';
+  if (model.mark === "star")
+    return '<svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 1 L9.5 6.2 H15 L10.6 9.4 L12.2 14.6 L8 11.4 L3.8 14.6 L5.4 9.4 L1 6.2 H6.5 Z" fill="' + c + '"/></svg>';
+  if (model.mark === "inf")
+    return '<svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M4.2 5.2 A2.3 2.3 0 1 0 4.2 10.8 L11.8 5.2 A2.3 2.3 0 1 1 11.8 10.8 Z" fill="none" stroke="' + c + '" stroke-width="1.6"/></svg>';
+  if (model.mark === "x")
+    return '<svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M3 3 L7 8 L3 13 H5.4 L8 9.6 L10.6 13 H13 L9 8 L13 3 H10.6 L8 6.4 L5.4 3 Z" fill="' + c + '"/></svg>';
+  return '<svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><rect x="2" y="2" width="12" height="12" rx="3" fill="' + c + '"/></svg>';
+}
+function flag(id) {
+  if (id === "argon") return "Waitlist";
+  if (id === "grokf") return "Build only";
+  if (id === "q27") return "Studio";
+  return "";
+}
+function rowHtml(metric, model) {
+  const cell = D.cells[metric.id][model.id];
+  const max = scaleMax(metric.id);
+  const placed = placeTicks((D.ticks[metric.id] && D.ticks[metric.id][model.id]) || [], max);
+  const lo = cell.lo;
+  const hi = cell.hi;
+  const edge = model.edge ? " edge" : "";
+  let track = "";
+  if (lo == null) track += '<span class="stub"></span>';
+  else if (hi == null && lo > 0)
+    track += '<span class="bar' + edge + '" style="width:' + (lo / max) * 100 + "%;background:" + model.hex + '"></span>';
+  else if (lo === 0 && hi == null)
+    track += '<span class="nub' + edge + '" style="background:' + model.hex + '"></span>';
+  else if (hi != null)
+    track +=
+      '<span class="band" style="left:' +
+      (lo / max) * 100 +
+      "%;width:" +
+      Math.max(2, ((hi - lo) / max) * 100) +
+      '%"></span>';
+  for (const item of placed) {
+    if (item.slot === "hide") continue;
+    const right = item.p > 0.72 ? " right" : "";
+    track +=
+      '<span class="tick ' +
+      item.slot +
+      right +
+      '" style="left:' +
+      item.p * 100 +
+      '%"><span>' +
+      item.tick.ver +
+      "</span></span>";
+  }
+  const f = flag(model.id);
+  return (
+    '<button type="button" class="row" data-open="' +
+    metric.id +
+    ":" +
+    model.id +
+    '"><span class="chip"><span class="' +
+    (model.edge ? "edge" : "") +
+    '" style="width:22px;height:22px;border-radius:6px;background:' +
+    model.hex +
+    ";display:grid;place-items:center;flex:0 0 auto;" +
+    (model.edge ? "box-shadow:inset 0 0 0 1px var(--bar-edge)" : "") +
+    '">' +
+    mark(model) +
+    '</span><span class="tag">' +
+    model.tag +
+    (f ? '<span class="flag">' + f + "</span>" : "") +
+    '</span></span><span class="track">' +
+    track +
+    '</span><span class="score' +
+    (hi != null ? " bad" : "") +
+    '">' +
+    cell.text +
+    (hi != null ? "<small>disagree</small>" : "") +
+    "</span></button>"
+  );
+}
+function chart(metric) {
+  const rows = ranked(metric.id)
+    .map((r) => rowHtml(metric, r.model))
+    .join("");
+  return (
+    '<section class="section"><p class="kicker">' +
+    metric.kicker +
+    '</p><h2 class="card-title">' +
+    metric.title +
+    '</h2><p class="best">' +
+    headline(metric.id) +
+    '</p><p class="used">Bench: ' +
+    metric.bench +
+    ". Used for: " +
+    metric.used +
+    ".</p>" +
+    rows +
+    "</section>"
+  );
+}
+
+const root = document.querySelector("main");
+let tab = "pick";
+let dark = false;
+let job = null;
+let open = null;
+
+function sheet() {
+  if (!open) return "";
+  const metric = metricById(open[0]);
+  const model = modelById(open[1]);
+  const cell = D.cells[metric.id][model.id];
+  const older = (D.ticks[metric.id] && D.ticks[metric.id][model.id]) || [];
+  const price = D.prices[model.id];
+  const links = cell.sources.length
+    ? cell.sources
+        .map(
+          (src) =>
+            '<a class="src-link" href="' +
+            src.url +
+            '" target="_blank" rel="noreferrer">' +
+            src.who +
+            ". " +
+            src.detail +
+            "</a>",
+        )
+        .join("")
+    : "<p>No source, because no public number was found.</p>";
+  const old = older.length
+    ? "<ul class='steps'>" + older.map((t) => "<li>" + t.ver + ": " + t.value + ". " + t.detail + "</li>").join("") + "</ul>"
+    : "<p>No older version in the last 6 months had a published number on this bench.</p>";
+  const priceLine = price
+    ? "<p>$" + price.inn + " in / $" + price.out + " out per 1M tokens. " + price.note + "</p>"
+    : "<p>No public price on this pull.</p>";
+  return (
+    '<button type="button" class="sheet-back" data-close="1" aria-label="Close details"></button><aside class="sheet" role="dialog"><button type="button" class="ghost" data-close="1">Close</button><h2>' +
+    model.name +
+    '</h2><p class="used">' +
+    metric.title +
+    "</p>" +
+    (model.access ? "<p>" + model.access + "</p>" : "") +
+    "<p>" +
+    cell.text +
+    (cell.lo == null ? "" : " " + metric.unit) +
+    (cell.hi != null ? " Sources disagree. Not averaged." : "") +
+    "</p>" +
+    (cell.note ? "<p>" + cell.note + "</p>" : "") +
+    links +
+    "<h3>Older versions</h3>" +
+    old +
+    "<h3>Price</h3>" +
+    priceLine +
+    "<p>Pulled " +
+    D.pulled +
+    ".</p></aside>"
+  );
+}
+
+function body() {
+  const house = D.house.inputTokens.toLocaleString("en-US");
+  const out = D.house.outputTokens.toLocaleString("en-US");
+  const active = D.jobs.find((j) => j.id === job);
+  let view = "";
+  if (tab === "pick") {
+    view =
+      '<section class="section"><p class="kicker">How to choose</p><h2 class="card-title">Four steps, then a bench</h2><ol class="steps"><li><strong>1. Name the job</strong> A boss plans and checks other agents. Hands on a computer clicks a desktop. A repo worker writes code in a terminal. Short turns are the cheap path.</li><li><strong>2. Cross off what you cannot run</strong> Argon is waitlist only. Grok Fast only runs inside Cursor and Grok Build. Q27B only runs on your Studio. Those three can still show a score. They cannot be the best live pick.</li><li><strong>3. Read the three scores</strong> Cost is dollars for one house turn (' +
+      house +
+      " in, " +
+      out +
+      " out). Speed is seconds to write those " +
+      out +
+      ' tokens. Value is AA points per dollar, and it stays blank if either input is missing or the sources fight.</li><li><strong>4. Take the top of the matching bench</strong> Do not average Terminal-Bench with DeepSWE, and do not average two prices into one score. A dashed tick is an older version. A tick past the bar means that older version scored higher.</li></ol><h2 class="card-title" style="margin-top:24px">What are you staffing?</h2><div class="jobs">' +
+      D.jobs
+        .map(
+          (item) =>
+            '<button type="button" class="job" data-job="' +
+            item.id +
+            '" aria-pressed="' +
+            (job === item.id) +
+            '">' +
+            item.label +
+            "</button>",
+        )
+        .join("") +
+      '<input class="other" id="other" placeholder="Other" aria-label="Other job"></div>' +
+      (active ? '<p class="rec">' + active.blurb + "</p>" : "") +
+      (job && !active ? '<p class="rec">Saved. Use Cost, Speed, and Value, then the bench closest to that job.</p>' : "") +
+      '<p class="used">Terra on this board is GPT-5.6 Terra. GPT-6 Terra is not out. Muse on this board is Muse Spark 1.3, not Muse Wonder.</p></section>';
+  }
+  view += D.metrics
+    .filter((m) => m.tab === tab)
+    .map(chart)
+    .join("");
+  if (tab === "sources") {
+    view +=
+      '<section class="section"><p class="kicker">How the numbers were combined</p><h2 class="card-title">Weight the source, do not blend a fight</h2><p class="used">The three scores are formulas, not a secret average of every benchmark. Cost and speed use one house turn. Value divides the AA index by that cost, and only when both inputs are a single published number.</p>' +
+      D.weights.map((row) => '<div class="src-block"><h3>' + row.tier + "</h3><p>" + row.use + "</p></div>").join("") +
+      '<h2 class="card-title" style="margin-top:28px">Left off the bars</h2><ul class="steps">' +
+      D.rejected.map((item) => "<li>" + item + "</li>").join("") +
+      '</ul><p class="used">House turn: ' +
+      D.house.why +
+      "</p></section>";
+  }
+  return (
+    '<header class="top"><div><p class="brand"><span>Advaita</span> · Model board</p><h1>Benchmark battle</h1><p class="meta">' +
+    D.pulledLine +
+    " · " +
+    D.models.length +
+    ' models · tap a row for sources</p></div><button type="button" class="ghost" id="theme">' +
+    (dark ? "Light mode" : "Dark mode") +
+    '</button></header><ul class="legend" aria-label="How to read a row"><li><span class="key key-new"></span>Newest</li><li><span class="key key-old"></span>Older version</li><li><span class="key key-fight"></span>Sources disagree</li><li><span class="key key-none"></span>? No score yet</li></ul><p class="draft">Marks are simple shapes, not company logos. Draft data. Ungraded.</p><p class="lede"><strong>Who should do the job.</strong> Staff ' +
+    lineFor("aa", "no published boss") +
+    " as the boss. Put " +
+    lineFor("osworld", "no published desktop model") +
+    " on the desktop. Put " +
+    lineFor("deepswe", "no published repo model") +
+    ' on repo work. Use Haiku when the turn has to be cheap.</p><nav class="tabs">' +
+    TABS.map(
+      ([id, label]) =>
+        '<button type="button" class="tab" data-tab="' + id + '" aria-selected="' + (tab === id) + '">' + label + "</button>",
+    ).join("") +
+    "</nav>" +
+    view +
+    '<footer class="foot"><p>Pulled ' +
+    D.pulled +
+    ". Same board as the live preview. Open this page in Safari. Amber means the sources disagree.</p></footer>" +
+    sheet()
+  );
+}
+
+function draw() {
+  const other = document.getElementById("other");
+  const keep = other ? other.value : "";
+  root.innerHTML = body();
+  const next = document.getElementById("other");
+  if (next && keep) next.value = keep;
+}
+
+root.addEventListener("click", (event) => {
+  const theme = event.target.closest("#theme");
+  if (theme) {
+    dark = !dark;
+    document.documentElement.dataset.theme = dark ? "dark" : "light";
+    localStorage.setItem("mb-theme", dark ? "dark" : "light");
+    draw();
+    return;
+  }
+  const t = event.target.closest("[data-tab]");
+  if (t) {
+    tab = t.getAttribute("data-tab");
+    open = null;
+    draw();
+    return;
+  }
+  const j = event.target.closest("[data-job]");
+  if (j) {
+    const id = j.getAttribute("data-job");
+    job = job === id ? null : id;
+    localStorage.setItem("decisions/call1", JSON.stringify({ question: "What are you staffing?", pick: job, savedAt: new Date().toISOString() }));
+    draw();
+    return;
+  }
+  const row = event.target.closest("[data-open]");
+  if (row) {
+    open = row.getAttribute("data-open").split(":");
+    draw();
+    return;
+  }
+  if (event.target.closest("[data-close]")) {
+    open = null;
+    draw();
+  }
+});
+root.addEventListener("input", (event) => {
+  if (event.target.id !== "other") return;
+  const value = event.target.value.trim();
+  job = value || null;
+  localStorage.setItem("decisions/call1", JSON.stringify({ question: "What are you staffing?", pick: job, savedAt: new Date().toISOString() }));
+  const rec = root.querySelector(".rec");
+  if (value && !rec) {
+    const p = document.createElement("p");
+    p.className = "rec";
+    p.textContent = "Saved. Use Cost, Speed, and Value, then the bench closest to that job.";
+    event.target.parentElement.after(p);
+  }
+});
+
+try {
+  const theme = localStorage.getItem("mb-theme");
+  dark = theme ? theme === "dark" : matchMedia("(prefers-color-scheme: dark)").matches;
+  if (theme) document.documentElement.dataset.theme = theme;
+  const raw = localStorage.getItem("decisions/call1");
+  if (raw) job = JSON.parse(raw).pick || null;
+} catch (e) {}
+draw();
+</script>
+</body>
+</html>
